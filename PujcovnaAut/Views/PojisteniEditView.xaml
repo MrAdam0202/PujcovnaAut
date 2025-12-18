@@ -1,0 +1,34 @@
+﻿<Window x:Class="PujcovnaAut.PojisteniEditView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PujcovnaAut"
+        mc:Ignorable="d"
+        Title="Detail Pojištění" Height="250" Width="400"
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="Název plánu:" VerticalAlignment="Center" Margin="5"/>
+        <TextBox   Grid.Row="0" Grid.Column="1" Text="{Binding EditovanePojisteni.NazevPlanu}" Margin="5"/>
+
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="Cena za den (Kč):" VerticalAlignment="Center" Margin="5"/>
+        <TextBox   Grid.Row="1" Grid.Column="1" Text="{Binding EditovanePojisteni.CenaZaDen}" Margin="5"/>
+
+        <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+            <Button Content="Uložit" Width="80" Height="25" Margin="5"
+                    Command="{Binding UlozitCommand}"
+                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
+        </StackPanel>
+    </Grid>
+</Window>

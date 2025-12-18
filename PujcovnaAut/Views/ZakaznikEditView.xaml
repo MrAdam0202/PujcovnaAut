@@ -1,0 +1,35 @@
+﻿<Window x:Class="PujcovnaAut.ZakaznikEditView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Zákazník" Height="300" Width="400" WindowStartupLocation="CenterScreen">
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Jméno:" Margin="5"/>
+        <TextBox Grid.Column="1" Text="{Binding EditovanyZakaznik.Jmeno}" Margin="5"/>
+
+        <TextBlock Grid.Row="1" Text="Příjmení:" Margin="5"/>
+        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding EditovanyZakaznik.Prijmeni}" Margin="5"/>
+
+        <TextBlock Grid.Row="2" Text="Email:" Margin="5"/>
+        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding EditovanyZakaznik.Email}" Margin="5"/>
+
+        <TextBlock Grid.Row="3" Text="Telefon:" Margin="5"/>
+        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding EditovanyZakaznik.Telefon}" Margin="5"/>
+
+        <Button Grid.Row="5" Grid.Column="1" Content="Uložit" Command="{Binding UlozitCommand}" 
+                CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}" 
+                HorizontalAlignment="Right" Width="80" Height="25"/>
+    </Grid>
+</Window>

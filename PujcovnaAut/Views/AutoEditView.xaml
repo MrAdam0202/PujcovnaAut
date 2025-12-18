@@ -1,0 +1,51 @@
+﻿<Window x:Class="PujcovnaAut.Views.AutoEditView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PujcovnaAut"
+        mc:Ignorable="d"
+        Title="Detail Auta" Height="350" Width="400"
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="Značka:" VerticalAlignment="Center" Margin="5"/>
+        <TextBox   Grid.Row="0" Grid.Column="1" Text="{Binding EditovaneAuto.Znacka}" Margin="5"/>
+
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="Model:" VerticalAlignment="Center" Margin="5"/>
+        <TextBox   Grid.Row="1" Grid.Column="1" Text="{Binding EditovaneAuto.Model}" Margin="5"/>
+
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="SPZ:" VerticalAlignment="Center" Margin="5"/>
+        <TextBox   Grid.Row="2" Grid.Column="1" Text="{Binding EditovaneAuto.SPZ}" Margin="5"/>
+
+        <TextBlock Grid.Row="3" Grid.Column="0" Text="Kategorie:" VerticalAlignment="Center" Margin="5"/>
+        <ComboBox  Grid.Row="3" Grid.Column="1" Margin="5"
+                   ItemsSource="{Binding SeznamKategorii}"
+                   DisplayMemberPath="NazevKategorie"
+                   SelectedValuePath="KategorieId"
+                   SelectedValue="{Binding EditovaneAuto.KategorieId}"/>
+        <TextBlock Grid.Row="4" Grid.Column="0" Text="Stav:" VerticalAlignment="Center" Margin="5"/>
+        <ComboBox  Grid.Row="4" Grid.Column="1" Margin="5"
+                   ItemsSource="{Binding SeznamStavu}"
+                   SelectedItem="{Binding EditovaneAuto.Stav}"/>
+
+        <StackPanel Grid.Row="5" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+            <Button Content="Uložit" Width="80" Height="25" Margin="5"
+                    Command="{Binding UlozitCommand}"
+                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
+        </StackPanel>
+    </Grid>
+</Window>

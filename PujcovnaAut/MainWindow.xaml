@@ -1,0 +1,126 @@
+﻿<Window x:Class="PujcovnaAut.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PujcovnaAut"
+        xmlns:vm="clr-namespace:PujcovnaAut.ViewModels"
+        mc:Ignorable="d"
+        Title="Půjčovna Aut" Height="650" Width="1100"
+        WindowStartupLocation="CenterScreen">
+
+    <Window.DataContext>
+        <vm:MainViewModel/>
+    </Window.DataContext>
+
+    <Grid Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="#DDDDDD" BorderBrush="Black" BorderThickness="1">
+            <TextBlock Text="Výpůjčky - Dispečink" FontWeight="Bold" HorizontalAlignment="Center" Padding="10" FontSize="16"/>
+        </Border>
+
+        <Grid Grid.Row="1" Margin="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0" Background="#DDEEFF" BorderBrush="Black" BorderThickness="1,1,1,1" Padding="5">
+                <TextBlock Text="Filtr dle zákazníka:" FontWeight="Bold" VerticalAlignment="Center"/>
+            </Border>
+
+            <Border Grid.Column="1" BorderBrush="Black" BorderThickness="0,1,1,1" Padding="2">
+                <ComboBox ItemsSource="{Binding ZakazniciCol}" 
+                          SelectedItem="{Binding VybranyZakaznikFiltr}"
+                          DisplayMemberPath="Prijmeni" 
+                          IsEditable="False"
+                          HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+            </Border>
+        </Grid>
+
+        <Border Grid.Row="2" Background="White" BorderBrush="Black" BorderThickness="1,0,1,0" Margin="5,0,5,0">
+            <TextBlock Text="Seznam výpůjček" Margin="5,2" FontWeight="SemiBold"/>
+        </Border>
+
+        <DataGrid Grid.Row="3" Margin="5,0,5,5"
+                  ItemsSource="{Binding VypujckyView}"
+                  SelectedItem="{Binding VybranaVypujcka}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  HeadersVisibility="Column"
+                  BorderBrush="Black"
+                  BorderThickness="1"
+                  SelectionMode="Single"
+                  GridLinesVisibility="Horizontal">
+
+            <DataGrid.Resources>
+                <Style TargetType="DataGridColumnHeader">
+                    <Setter Property="Padding" Value="5"/>
+                    <Setter Property="FontWeight" Value="Bold"/>
+                </Style>
+                <Style TargetType="DataGridCell">
+                    <Setter Property="Padding" Value="3"/>
+                </Style>
+            </DataGrid.Resources>
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding VypujckaId}" Width="40"/>
+
+                <DataGridTextColumn Header="Zákazník" Binding="{Binding Zakaznik.Prijmeni}" Width="*"/>
+                <DataGridTextColumn Header="Jméno" Binding="{Binding Zakaznik.Jmeno}" Width="*"/>
+
+                <DataGridTextColumn Header="SPZ" Binding="{Binding Auto.SPZ}" Width="80" FontWeight="Bold"/>
+                <DataGridTextColumn Header="Vůz" Binding="{Binding Auto.Model}" Width="1.5*"/>
+
+                <DataGridTextColumn Header="Stav" Binding="{Binding Stav}" Width="Auto"/>
+
+                <DataGridTextColumn Header="Od" Binding="{Binding DatumOd, StringFormat=d}" Width="Auto"/>
+                <DataGridTextColumn Header="Do" Binding="{Binding DatumDo, StringFormat=d}" Width="Auto"/>
+
+                <DataGridTextColumn Header="Dny" Binding="{Binding PocetDni}" Width="40" FontWeight="Bold"/>
+
+                <DataGridTextColumn Header="Cena" Binding="{Binding CenaCelkem, StringFormat=C0}" Width="Auto"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <Grid Grid.Row="4" Margin="5,0,5,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <GroupBox Grid.Column="0" Header="Operace s výpůjčkou" Margin="0,0,5,0" Padding="5" FontWeight="Bold">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Button Content="VRÁTIT" Width="100" Height="40" Margin="5" Background="#FFCCCC" FontWeight="Normal"
+                            Command="{Binding VratitAutoCommand}" ToolTip="Ukončit vybranou výpůjčku"/>
+
+                    <Button Content="UPRAVIT" Width="100" Height="40" Margin="5" Background="#FFFFAA" FontWeight="Normal"
+                            Command="{Binding UpravitVypujckuCommand}" ToolTip="Editovat vybranou výpůjčku"/>
+
+                    <Button Content="VYPŮJČIT" Width="100" Height="40" Margin="5" Background="#CCFFCC" FontWeight="Bold" FontSize="14"
+                            Command="{Binding NovaVypujckaCommand}" ToolTip="Vytvořit novou výpůjčku"/>
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Grid.Column="1" Header="Správa dat / Evidence" Margin="5,0,0,0" Padding="5" FontWeight="Bold">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Button Content="ZÁKAZNÍCI" Width="100" Height="40" Margin="5" Background="#DDEEFF" FontWeight="Normal"
+                            Command="{Binding SpravaZakaznikuCommand}"/>
+
+                    <Button Content="SAZBY" Width="100" Height="40" Margin="5" Background="#DDEEFF" FontWeight="Normal"
+                            Command="{Binding SpravaSazebCommand}"/>
+
+                    <Button Content="VOZIDLA" Width="100" Height="40" Margin="5" Background="#DDEEFF" FontWeight="Normal"
+                            Command="{Binding SpravaVozidelCommand}"/>
+                </StackPanel>
+            </GroupBox>
+        </Grid>
+    </Grid>
+</Window>

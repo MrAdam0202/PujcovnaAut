@@ -1,0 +1,75 @@
+﻿<Window x:Class="PujcovnaAut.Views.VypujckaEditView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Výpůjčka" Height="500" Width="600" WindowStartupLocation="CenterScreen">
+
+    <Grid Margin="15">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="150"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Datum OD:" VerticalAlignment="Center" Grid.Row="0"/>
+        <DatePicker SelectedDate="{Binding Vypujcka.DatumOd}" 
+                    Grid.Column="1" Grid.Row="0" Margin="2" 
+                    CalendarClosed="DatePicker_CalendarClosed"/>
+
+        <TextBlock Text="Datum DO:" VerticalAlignment="Center" Grid.Row="1"/>
+        <DatePicker SelectedDate="{Binding Vypujcka.DatumDo}" 
+                    Grid.Column="1" Grid.Row="1" Margin="2"
+                    CalendarClosed="DatePicker_CalendarClosed"/>
+
+        <TextBlock Text="Počet dní:" VerticalAlignment="Center" Grid.Row="2"/>
+        <TextBlock Text="{Binding PocetDni, StringFormat='{}{0} dní'}" 
+                   Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" FontWeight="Bold" Margin="5,0"/>
+
+        <TextBlock Text="Zákazník:" VerticalAlignment="Center" Grid.Row="3"/>
+        <ComboBox ItemsSource="{Binding ZakazniciCol}" 
+                  SelectedItem="{Binding Vypujcka.Zakaznik}"
+                  DisplayMemberPath="CeleJmeno" 
+                  Grid.Column="1" Grid.Row="3" Margin="2"/>
+
+        <TextBlock Text="Pojištění:" VerticalAlignment="Center" Grid.Row="4"/>
+        <ComboBox ItemsSource="{Binding PojisteniCol}" 
+                  SelectedItem="{Binding Vypujcka.Pojisteni}"
+                  DisplayMemberPath="NazevPlanu" Grid.Column="1" Grid.Row="4" Margin="2"
+                  SelectionChanged="ComboBox_SelectionChanged"/>
+
+        <TextBlock Text="Vozidlo:" VerticalAlignment="Center" Grid.Row="5"/>
+        <ComboBox Grid.Column="1" Grid.Row="5" Margin="2"
+                  ItemsSource="{Binding AutaVyberCol}"
+                  SelectedItem="{Binding VybranyItemAuto}">
+
+            <ComboBox.ItemContainerStyle>
+                <Style TargetType="ComboBoxItem">
+                    <Setter Property="IsEnabled" Value="{Binding JeDostupne}"/>
+                </Style>
+            </ComboBox.ItemContainerStyle>
+
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Text}" Foreground="{Binding BarvaPisma}"/>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+
+        <TextBlock Text="Cena celkem:" VerticalAlignment="Center" Grid.Row="6" FontWeight="Bold"/>
+        <TextBlock Text="{Binding PredbeznaCena, StringFormat=C0}" 
+                   Grid.Column="1" Grid.Row="6" VerticalAlignment="Center" FontWeight="Bold" Foreground="Green" FontSize="14"/>
+
+        <StackPanel Grid.Row="7" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+            <Button Content="POTVRDIT" IsDefault="True" Click="BtnOk_Click" Width="100" Height="30" Margin="5"/>
+            <Button Content="Zrušit" IsCancel="True" Width="100" Height="30" Margin="5"/>
+        </StackPanel>
+    </Grid>
+</Window>

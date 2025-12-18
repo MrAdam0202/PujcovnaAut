@@ -1,0 +1,178 @@
+﻿<Window x:Class="PujcovnaAut.Views.SpravaZakaznikuView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:PujcovnaAut.ViewModels"
+        mc:Ignorable="d"
+        Title="Správa zákazníků" Height="550" Width="950" WindowStartupLocation="CenterScreen">
+
+    <Window.DataContext>
+        <vm:SpravaZakaznikuViewModel/>
+    </Window.DataContext>
+
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="400"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0" BorderBrush="Black" BorderThickness="1" Margin="0,0,10,0" VerticalAlignment="Top">
+            <StackPanel>
+                <Border Background="#CCCCCC" BorderBrush="Black" BorderThickness="0,0,0,1" Padding="5">
+                    <TextBlock Text="Zákazník" FontWeight="Bold" HorizontalAlignment="Center"/>
+                </Border>
+
+                <Grid DataContext="{Binding VybranyZakaznik}">
+                    <Grid.Style>
+                        <Style TargetType="Grid">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding}" Value="{x:Null}">
+                                    <Setter Property="IsEnabled" Value="False"/>
+                                    <Setter Property="Opacity" Value="0.5"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Border Grid.Row="0" Grid.Column="0" BorderBrush="Black" BorderThickness="0,0,1,1" Background="White">
+                        <TextBlock Text="Položka" HorizontalAlignment="Center" Padding="2"/>
+                    </Border>
+                    <Border Grid.Row="0" Grid.Column="1" BorderBrush="Black" BorderThickness="0,0,0,1" Background="White">
+                        <TextBlock Text="Hodnota" HorizontalAlignment="Center" Padding="2"/>
+                    </Border>
+
+                    <Border Grid.Row="1" Grid.Column="0" BorderBrush="Black" BorderThickness="0,0,1,1">
+                        <TextBlock Text="ID zákazníka" Padding="5"/>
+                    </Border>
+                    <Border Grid.Row="1" Grid.Column="1" BorderBrush="Black" BorderThickness="0,0,0,1">
+                        <TextBlock Padding="5" FontWeight="Bold">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Text" Value="{Binding ZakaznikId}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ZakaznikId}" Value="0">
+                                            <Setter Property="Text" Value="(nové)"/>
+                                            <Setter Property="Foreground" Value="Gray"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </Border>
+
+                    <Border Grid.Row="2" Grid.Column="0" BorderBrush="Black" BorderThickness="0,0,1,1">
+                        <TextBlock Text="Jméno" Padding="5"/>
+                    </Border>
+                    <Border Grid.Row="2" Grid.Column="1" BorderBrush="Black" BorderThickness="0,0,0,1">
+                        <TextBox Text="{Binding Jmeno, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Margin="2"/>
+                    </Border>
+
+                    <Border Grid.Row="3" Grid.Column="0" BorderBrush="Black" BorderThickness="0,0,1,1">
+                        <TextBlock Text="Příjmení" Padding="5"/>
+                    </Border>
+                    <Border Grid.Row="3" Grid.Column="1" BorderBrush="Black" BorderThickness="0,0,0,1">
+                        <TextBox Text="{Binding Prijmeni, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Margin="2"/>
+                    </Border>
+
+                    <Border Grid.Row="4" Grid.Column="0" BorderBrush="Black" BorderThickness="0,0,1,1">
+                        <TextBlock Text="Email" Padding="5"/>
+                    </Border>
+                    <Border Grid.Row="4" Grid.Column="1" BorderBrush="Black" BorderThickness="0,0,0,1">
+                        <TextBox Text="{Binding Email, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Margin="2"/>
+                    </Border>
+
+                    <Border Grid.Row="5" Grid.Column="0" BorderBrush="Black" BorderThickness="0,0,1,1">
+                        <TextBlock Text="Telefon" Padding="5"/>
+                    </Border>
+                    <Border Grid.Row="5" Grid.Column="1" BorderBrush="Black" BorderThickness="0,0,0,1">
+                        <TextBox Text="{Binding Telefon, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Margin="2"/>
+                    </Border>
+
+                    <Border Grid.Row="6" Grid.Column="0" BorderBrush="Black" BorderThickness="0,0,1,1">
+                        <TextBlock Text="Datum narození" Padding="5"/>
+                    </Border>
+                    <Border Grid.Row="6" Grid.Column="1" BorderBrush="Black" BorderThickness="0,0,0,1">
+                        <DatePicker SelectedDate="{Binding DatumNarozeni}" Margin="2"/>
+                    </Border>
+
+                    <Border Grid.Row="7" Grid.Column="0" BorderBrush="Black" BorderThickness="0,0,1,0" Background="#DDEEFF">
+                        <Button Content="OK" FontWeight="Bold" Background="Transparent" BorderThickness="0" Height="30"
+                                Command="{Binding DataContext.UlozitCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                    </Border>
+                    <Border Grid.Row="7" Grid.Column="1" BorderBrush="Black" BorderThickness="0,0,0,0" Background="#DDEEFF">
+                        <Button Content="STORNO" FontWeight="Bold" Background="Transparent" BorderThickness="0" Height="30"
+                                Command="{Binding DataContext.StornoCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                    </Border>
+                </Grid>
+            </StackPanel>
+        </Border>
+
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,5">
+                <Button Content="+ Nový zákazník" Command="{Binding NovyZaznamCommand}" Margin="5,0" Width="100" Padding="5"/>
+                <Button Content="- Smazat" Command="{Binding SmazatZaznamCommand}" Margin="5,0" Width="100" Padding="5"/>
+            </StackPanel>
+
+            <DataGrid Grid.Row="1"
+                      ItemsSource="{Binding ZakazniciCol}"
+                      SelectedItem="{Binding VybranyZakaznik}"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      BorderBrush="Black"
+                      BorderThickness="1"
+                      SelectionMode="Single">
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Header="ID" Width="Auto">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock>
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Text" Value="{Binding ZakaznikId}"/>
+                                            <Setter Property="VerticalAlignment" Value="Center"/>
+                                            <Setter Property="Padding" Value="2"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ZakaznikId}" Value="0">
+                                                    <Setter Property="Text" Value="(nové)"/>
+                                                    <Setter Property="Foreground" Value="Gray"/>
+                                                    <Setter Property="FontStyle" Value="Italic"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTextColumn Header="Jméno" Binding="{Binding Jmeno}" Width="*"/>
+                    <DataGridTextColumn Header="Příjmení" Binding="{Binding Prijmeni}" Width="*"/>
+                    <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="1.5*"/>
+                    <DataGridTextColumn Header="Telefon" Binding="{Binding Telefon}" Width="*"/>
+                    <DataGridTextColumn Header="Narozen" Binding="{Binding DatumNarozeni, StringFormat=d}" Width="*"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+    </Grid>
+</Window>
