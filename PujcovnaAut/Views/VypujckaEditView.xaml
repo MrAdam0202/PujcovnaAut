@@ -36,7 +36,6 @@
         <TextBlock Text="Zákazník:" VerticalAlignment="Center" Grid.Row="3"/>
         <ComboBox ItemsSource="{Binding ZakazniciCol}" 
                   SelectedItem="{Binding Vypujcka.Zakaznik}"
-                  DisplayMemberPath="CeleJmeno" 
                   Grid.Column="1" Grid.Row="3" Margin="2"/>
 
         <TextBlock Text="Pojištění:" VerticalAlignment="Center" Grid.Row="4"/>

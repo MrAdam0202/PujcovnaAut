@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:PujcovnaAut.ViewModels"
         mc:Ignorable="d"
-        Title="Správa zákazníků" Height="550" Width="950" WindowStartupLocation="CenterScreen">
+        Title="Správa zákazníků" Height="600" Width="1000" WindowStartupLocation="CenterScreen">
 
     <Window.DataContext>
         <vm:SpravaZakaznikuViewModel/>
@@ -40,6 +40,7 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
@@ -111,11 +112,18 @@
                         <DatePicker SelectedDate="{Binding DatumNarozeni}" Margin="2"/>
                     </Border>
 
-                    <Border Grid.Row="7" Grid.Column="0" BorderBrush="Black" BorderThickness="0,0,1,0" Background="#DDEEFF">
+                    <Border Grid.Row="7" Grid.Column="0" BorderBrush="Black" BorderThickness="0,0,1,1">
+                        <TextBlock Text="Číslo ŘP" Padding="5"/>
+                    </Border>
+                    <Border Grid.Row="7" Grid.Column="1" BorderBrush="Black" BorderThickness="0,0,0,1">
+                        <TextBox Text="{Binding CisloRP, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Margin="2"/>
+                    </Border>
+
+                    <Border Grid.Row="8" Grid.Column="0" BorderBrush="Black" BorderThickness="0,0,1,0" Background="#DDEEFF">
                         <Button Content="OK" FontWeight="Bold" Background="Transparent" BorderThickness="0" Height="30"
                                 Command="{Binding DataContext.UlozitCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
                     </Border>
-                    <Border Grid.Row="7" Grid.Column="1" BorderBrush="Black" BorderThickness="0,0,0,0" Background="#DDEEFF">
+                    <Border Grid.Row="8" Grid.Column="1" BorderBrush="Black" BorderThickness="0,0,0,0" Background="#DDEEFF">
                         <Button Content="STORNO" FontWeight="Bold" Background="Transparent" BorderThickness="0" Height="30"
                                 Command="{Binding DataContext.StornoCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
                     </Border>
@@ -168,6 +176,7 @@
 
                     <DataGridTextColumn Header="Jméno" Binding="{Binding Jmeno}" Width="*"/>
                     <DataGridTextColumn Header="Příjmení" Binding="{Binding Prijmeni}" Width="*"/>
+                    <DataGridTextColumn Header="Číslo ŘP" Binding="{Binding CisloRP}" Width="*"/>
                     <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="1.5*"/>
                     <DataGridTextColumn Header="Telefon" Binding="{Binding Telefon}" Width="*"/>
                     <DataGridTextColumn Header="Narozen" Binding="{Binding DatumNarozeni, StringFormat=d}" Width="*"/>

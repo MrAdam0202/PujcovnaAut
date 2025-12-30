@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PujcovnaAut.Helpers;
-using PujcovnaAut.Model;
+using PujcovnaAut.Helpers; // Pokud máte RelayCommand v Helpers
+using DataEntity;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -17,7 +17,7 @@ namespace PujcovnaAut.ViewModels
         public ObservableCollection<Zakaznik> ZakazniciCol { get; set; }
         public ObservableCollection<Pojisteni> PojisteniCol { get; set; }
 
-        // --- VÝBĚR AUTA (WRAPPER) ---
+        // --- VÝBĚR AUTA ---
         private AutoVyberItem _vybranyItemAuto;
         public AutoVyberItem VybranyItemAuto
         {
@@ -36,7 +36,6 @@ namespace PujcovnaAut.ViewModels
             }
         }
 
-        // --- NOVÉ: POČET DNÍ PRO ZOBRAZENÍ ---
         private int _pocetDni;
         public int PocetDni
         {
@@ -44,7 +43,6 @@ namespace PujcovnaAut.ViewModels
             set { _pocetDni = value; OnPropertyChanged(); }
         }
 
-        // --- PŘEDBĚŽNÁ CENA ---
         private decimal _predbeznaCena;
         public decimal PredbeznaCena
         {
@@ -110,21 +108,21 @@ namespace PujcovnaAut.ViewModels
                 bool jeVolne = true;
                 string duvod = "";
 
-                if (item.Auto.Stav == StavAuta.Servis) { jeVolne = false; duvod = "(V servisu)"; }
-                else if (item.Auto.Stav == StavAuta.Vyrazene) { jeVolne = false; duvod = "(Vyřazeno)"; }
-                else
-                {
-                    bool kolize = _existujiciVypujcky.Any(v =>
-                        v.AutoId == item.Auto.AutoId &&
-                        (v.DatumOd.Date < Vypujcka.DatumDo.Date && Vypujcka.DatumOd.Date < v.DatumDo.Date)
-                    );
 
-                    if (kolize)
-                    {
-                        jeVolne = false;
-                        duvod = "(Nedostupné)";
-                    }
+                // Kontrola dostupnosti jen podle termínu výpůjček
+                bool kolize = _existujiciVypujcky.Any(v =>
+                    v.AutoId == item.Auto.AutoId &&
+                    (v.DatumOd.Date < Vypujcka.DatumDo.Date && Vypujcka.DatumOd.Date < v.DatumDo.Date)
+                );
+
+                if (kolize)
+                {
+                    jeVolne = false;
+                    duvod = "(Nedostupné - termín obsazen)";
                 }
+
+                // Volitelně: Pokud je auto globálně označené jako "Půjčené" a nemá to vazbu na konkrétní data,
+                // můžete to řešit zde, ale logika "kolize" výše je přesnější.
 
                 item.JeDostupne = jeVolne;
                 item.Text = $"{item.Auto.PopisAuta} {duvod}";
@@ -133,17 +131,13 @@ namespace PujcovnaAut.ViewModels
 
         private void PrepocitatCenu()
         {
-            // 1. Spočítat a nastavit dny
             TimeSpan rozdil = Vypujcka.DatumDo.Date - Vypujcka.DatumOd.Date;
             int dny = (int)rozdil.TotalDays;
             if (dny < 1) dny = 1;
 
-            PocetDni = dny; // Pro zobrazení v okně
-
-            // --- OPRAVA Č. 1: Zapsat dny do objektu pro databázi ---
+            PocetDni = dny;
             Vypujcka.PocetDni = dny;
 
-            // 2. Spočítat cenu
             if (VybranyItemAuto?.Auto?.Kategorie == null || Vypujcka.Pojisteni == null)
             {
                 PredbeznaCena = 0;
@@ -151,13 +145,14 @@ namespace PujcovnaAut.ViewModels
             }
 
             decimal cenaAuto = VybranyItemAuto.Auto.Kategorie.DenniSazba * dny;
-            decimal cenaPojisteni = (Vypujcka.Pojisteni.CenaZaDen * (decimal)VybranyItemAuto.Auto.Kategorie.KoeficientPoj) * dny;
+            // Převedení koeficientu z double na decimal pro výpočet
+            decimal koef = (decimal)VybranyItemAuto.Auto.Kategorie.KoeficientPoj;
+
+            decimal cenaPojisteni = (Vypujcka.Pojisteni.CenaZaDen * koef) * dny;
 
             decimal vyslednaCena = cenaAuto + cenaPojisteni;
 
-            PredbeznaCena = vyslednaCena; // Pro zobrazení v okně (zelený text)
-
-            // --- OPRAVA Č. 2: Zapsat cenu do objektu pro databázi ---
+            PredbeznaCena = vyslednaCena;
             Vypujcka.CenaCelkem = vyslednaCena;
         }
     }
