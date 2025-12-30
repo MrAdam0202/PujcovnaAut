@@ -35,6 +35,10 @@ namespace DataEntity
 
         public virtual ObservableCollection<Vypujcka> Vypujcky { get; set; } = new ObservableCollection<Vypujcka>();
 
+        /// <summary>
+        /// Přepis metody ToString slouží k formátování textového výstupu objektu.
+        /// Tato metoda je využívána například v ComboBoxu pro zobrazení jména a čísla ŘP.
+        /// </summary>
         public override string ToString()
         {
             return $"{Jmeno} {Prijmeni} ({CisloRP})";

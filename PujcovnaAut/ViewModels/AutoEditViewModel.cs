@@ -21,7 +21,6 @@ namespace PujcovnaAut.ViewModels
                 KategorieCol = new ObservableCollection<Kategorie>(kat);
             }
 
-            // OPRAVA: Odstraněny neexistující stavy Servis a Vyrazene
             StavyCol = new ObservableCollection<StavAuta>
             {
                 StavAuta.Volne,

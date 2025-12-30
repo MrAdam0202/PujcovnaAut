@@ -14,6 +14,8 @@ namespace DataEntity
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            // Pokud není konfigurace nastavena, je použit SQL Server s definovaným Connection Stringem.
+            // Je zapnuto Lazy Loading (líné načítání) pro automatické dotahování vazeb.
             if (!optionsBuilder.IsConfigured)
             {
                 optionsBuilder.UseSqlServer(
@@ -29,7 +31,7 @@ namespace DataEntity
         {
             base.OnModelCreating(modelBuilder);
 
-            // Nastavení přesnosti pro peníze (decimal)
+            // Je definována přesnost datového typu decimal pro finanční částky.
             modelBuilder.Entity<Kategorie>().Property(k => k.DenniSazba).HasColumnType("decimal(18,2)");
             modelBuilder.Entity<Pojisteni>().Property(p => p.CenaZaDen).HasColumnType("decimal(18,2)");
             modelBuilder.Entity<Vypujcka>().Property(v => v.CenaCelkem).HasColumnType("decimal(18,2)");
@@ -37,10 +39,14 @@ namespace DataEntity
             modelBuilder.Entity<Auto>().Property(a => a.CenaZaDen).HasColumnType("decimal(18,2)");
         }
 
-        // --- TOTO JE TA STARÁ ŠKOLNÍ METODA SEED() ---
+        /// <summary>
+        /// Metoda pro naplnění databáze výchozími daty (Seedování).
+        /// Je volána při startu aplikace, pokud jsou tabulky prázdné.
+        /// </summary>
         public void Seed()
         {
             // 1. KATEGORIE
+            // Je ověřeno, zda tabulka obsahuje data. Pokud ne, jsou vloženy kategorie.
             if (!Kategorie.Any())
             {
                 Kategorie.AddRange(
@@ -52,6 +58,7 @@ namespace DataEntity
             }
 
             // 2. POJIŠTĚNÍ
+            // Pokud tabulka neobsahuje data, jsou vloženy plány pojištění.
             if (!Pojisteni.Any())
             {
                 Pojisteni.AddRange(
@@ -62,9 +69,11 @@ namespace DataEntity
                 SaveChanges();
             }
 
-            // 3. AUTA (10 ks)
+            // 3. AUTA
+            // Pokud nejsou nalezena žádná auta, je vloženo 10 testovacích vozidel.
             if (!Auta.Any())
             {
+                // Jsou načtena ID kategorií pro správné párování.
                 var k1 = Kategorie.First(k => k.NazevKategorie == "Economy").KategorieId;
                 var k2 = Kategorie.First(k => k.NazevKategorie == "Standard").KategorieId;
                 var k3 = Kategorie.First(k => k.NazevKategorie == "Premium").KategorieId;
@@ -84,7 +93,8 @@ namespace DataEntity
                 SaveChanges();
             }
 
-            // 4. ZÁKAZNÍCI (10 ks)
+            // 4. ZÁKAZNÍCI
+            // Pokud tabulka zákazníků zeje prázdnotou, je vloženo 10 testovacích osob.
             if (!Zakaznici.Any())
             {
                 Zakaznici.AddRange(

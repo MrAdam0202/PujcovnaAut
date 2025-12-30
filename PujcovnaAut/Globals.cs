@@ -16,13 +16,13 @@ namespace PujcovnaAut
         {
             context = new PujcovnaContext();
 
-            // 1. Vytvoří databázi (pokud neexistuje)
+            // 1. Je ověřeno, zda databáze existuje. Pokud ne, je vytvořena.
             context.Database.EnsureCreated();
 
-            // 2. Zavolá metodu Seed, která tam nasype data (pokud je prázdno)
+            // 2. Je zavolána metoda Seed pro vložení výchozích dat, pokud je databáze prázdná.
             context.Seed();
 
-            // 3. Načtení dat do paměti aplikace
+            // 3. Data jsou načtena do lokální paměti (Local) pro použití v aplikaci.
             context.Auta.Load();
             context.Zakaznici.Load();
             context.Vypujcky.Load();
@@ -30,6 +30,9 @@ namespace PujcovnaAut
             context.Pojisteni.Load();
         }
 
+        /// <summary>
+        /// Metoda vrátí neuložené změny v kontextu.
+        /// </summary>
         public static void Vratit()
         {
             if (context == null) return;
@@ -50,6 +53,9 @@ namespace PujcovnaAut
                 e.State == EntityState.Deleted);
         }
 
+        /// <summary>
+        /// Metoda provede validaci entit a následně uloží změny do databáze.
+        /// </summary>
         public static void UlozitData()
         {
             if (context == null) return;
@@ -78,6 +84,7 @@ namespace PujcovnaAut
 
             try
             {
+                // Změny jsou odeslány do databáze.
                 context.SaveChanges();
             }
             catch (Exception ex)
