@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PujcovnaAut.Helpers;
-using PujcovnaAut.Model;
+using DataEntity;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;

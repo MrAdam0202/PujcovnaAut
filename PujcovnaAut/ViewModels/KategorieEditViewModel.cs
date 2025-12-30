@@ -1,7 +1,7 @@
 ﻿using System.Windows;       // Pro práci s oknem (zavření)
 using System.Windows.Input; // Pro ICommand
 using PujcovnaAut.Helpers;  // Pro RelayCommand
-using PujcovnaAut.Model;    // Pro Entitu Kategorie
+using DataEntity;    // Pro Entitu Kategorie
 
 namespace PujcovnaAut.ViewModels
 {

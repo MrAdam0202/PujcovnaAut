@@ -3,12 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
-
-namespace PujcovnaAut.Migrations
+namespace DataEntity.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitialSeed : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -21,7 +19,9 @@ namespace PujcovnaAut.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     NazevKategorie = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     DenniSazba = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: false)
+                    KoeficientPoj = table.Column<double>(type: "float", nullable: false),
+                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true),
+                    DatumVytvoreni = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -36,7 +36,8 @@ namespace PujcovnaAut.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     NazevPlanu = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     CenaZaDen = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: false)
+                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true),
+                    DatumVytvoreni = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -51,10 +52,12 @@ namespace PujcovnaAut.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Jmeno = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Prijmeni = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    DatumNarozeni = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CisloRP = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Telefon = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DatumNarozeni = table.Column<DateTime>(type: "date", nullable: false),
-                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: false)
+                    Telefon = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true),
+                    DatumVytvoreni = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -69,10 +72,14 @@ namespace PujcovnaAut.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Znacka = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Model = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    SPZ = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    SPZ = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
+                    RokVyroby = table.Column<int>(type: "int", nullable: false),
+                    CenaZaDen = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Stav = table.Column<int>(type: "int", nullable: false),
                     KategorieId = table.Column<int>(type: "int", nullable: false),
-                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: false)
+                    Obrazek = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true),
+                    DatumVytvoreni = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -91,14 +98,18 @@ namespace PujcovnaAut.Migrations
                 {
                     VypujckaId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ZakaznikId = table.Column<int>(type: "int", nullable: false),
-                    AutoId = table.Column<int>(type: "int", nullable: false),
-                    PojisteniId = table.Column<int>(type: "int", nullable: true),
                     DatumOd = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DatumDo = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PocetDni = table.Column<int>(type: "int", nullable: false),
+                    CelkovaCena = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     CenaCelkem = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Stav = table.Column<int>(type: "int", nullable: false),
-                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: false)
+                    PojisteniId = table.Column<int>(type: "int", nullable: false),
+                    Poznamka = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AutoId = table.Column<int>(type: "int", nullable: false),
+                    ZakaznikId = table.Column<int>(type: "int", nullable: false),
+                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true),
+                    DatumVytvoreni = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -113,50 +124,14 @@ namespace PujcovnaAut.Migrations
                         name: "FK_Vypujcky_Pojisteni_PojisteniId",
                         column: x => x.PojisteniId,
                         principalTable: "Pojisteni",
-                        principalColumn: "PojisteniId");
+                        principalColumn: "PojisteniId",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Vypujcky_Zakaznici_ZakaznikId",
                         column: x => x.ZakaznikId,
                         principalTable: "Zakaznici",
                         principalColumn: "ZakaznikId",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.InsertData(
-                table: "Kategorie",
-                columns: new[] { "KategorieId", "DenniSazba", "NazevKategorie" },
-                values: new object[,]
-                {
-                    { 1, 800m, "Economy" },
-                    { 2, 1200m, "Standard" },
-                    { 3, 2000m, "Premium" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Pojisteni",
-                columns: new[] { "PojisteniId", "CenaZaDen", "NazevPlanu" },
-                values: new object[,]
-                {
-                    { 1, 150m, "Basic" },
-                    { 2, 250m, "Standard" },
-                    { 3, 400m, "Full" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Zakaznici",
-                columns: new[] { "ZakaznikId", "DatumNarozeni", "Email", "Jmeno", "Prijmeni", "Telefon" },
-                values: new object[,]
-                {
-                    { 1, new DateTime(1990, 5, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), "jan.novak@email.cz", "Jan", "Novák", "777123456" },
-                    { 2, new DateTime(1985, 12, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "eva.dvorakova@seznam.cz", "Eva", "Dvořáková", "608987654" },
-                    { 3, new DateTime(1995, 3, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "petr.svoboda@gmail.com", "Petr", "Svoboda", "720111222" },
-                    { 4, new DateTime(1988, 7, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), "jana.novotna@post.cz", "Jana", "Novotná", "602333444" },
-                    { 5, new DateTime(1979, 11, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "martin.cerny@email.cz", "Martin", "Černý", "775555666" },
-                    { 6, new DateTime(2000, 1, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "lucie.prochazkova@seznam.cz", "Lucie", "Procházková", "731777888" },
-                    { 7, new DateTime(1992, 9, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), "tomas.kucera@centrum.cz", "Tomáš", "Kučera", "603999000" },
-                    { 8, new DateTime(1998, 4, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), "katka.vesela@gmail.com", "Kateřina", "Veselá", "722123789" },
-                    { 9, new DateTime(1983, 6, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), "jakub.horak@email.cz", "Jakub", "Horák", "776456123" },
-                    { 10, new DateTime(1991, 2, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), "misa.nemcova@post.cz", "Michaela", "Němcová", "605789123" }
                 });
 
             migrationBuilder.CreateIndex(

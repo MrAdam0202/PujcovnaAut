@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 using PujcovnaAut.Helpers;
-using PujcovnaAut.Model;
+using DataEntity;
 
 namespace PujcovnaAut.ViewModels
 {

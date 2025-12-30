@@ -1,6 +1,6 @@
 ﻿using PropertyChanged;
 using PujcovnaAut.Helpers;
-using PujcovnaAut.Model;
+using DataEntity;
 using System.Windows;
 using System.Windows.Input;
 

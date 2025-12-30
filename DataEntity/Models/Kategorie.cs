@@ -1,11 +1,13 @@
-﻿using System.Collections.ObjectModel;
+﻿using PropertyChanged;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PujcovnaAut.Model
+namespace DataEntity
 {
+    [AddINotifyPropertyChangedInterface]
     [Table("Kategorie")]
-    public class Kategorie
+    public class Kategorie : BaseModel
     {
         [Key]
         public int KategorieId { get; set; }
@@ -14,12 +16,14 @@ namespace PujcovnaAut.Model
         [StringLength(50)]
         public string NazevKategorie { get; set; }
 
-        // Cena za pronájem (např. 800, 1200, 2000)
+        [Required]
+        [Column(TypeName = "decimal(18,2)")] // Peněžní formát
         public decimal DenniSazba { get; set; }
 
-        // --- TOTO JSME VRÁTILI ZPĚT (Koeficient pro výpočet pojištění) ---
-        public double KoeficientPoj { get; set; }
+        public double KoeficientPoj { get; set; } = 1.0;
 
         public virtual ObservableCollection<Auto> Auta { get; set; } = new ObservableCollection<Auto>();
+
+        public override string ToString() => NazevKategorie;
     }
 }

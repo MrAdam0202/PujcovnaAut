@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PujcovnaAut.Helpers;
-using PujcovnaAut.Model;
+using DataEntity;
 using PujcovnaAut.Views;
 using System;
 using System.Collections.ObjectModel;
@@ -56,11 +56,11 @@ namespace PujcovnaAut.ViewModels
             // 1. NOVÁ VÝPŮJČKA
             NovaVypujckaCommand = new RelayCommand(NovaVypujcka);
 
-            // 2. VRÁCENÍ (Opraveno porovnání na Enum)
+            // 2. VRÁCENÍ (Povoleno jen pokud není null a není už ukončeno)
             VratitAutoCommand = new RelayCommand(VratitAuto, x =>
                 VybranaVypujcka != null && VybranaVypujcka.Stav != StavVypujcky.Ukonceno);
 
-            // 3. ÚPRAVA (Opraveno porovnání na Enum)
+            // 3. ÚPRAVA (Povoleno jen pokud není null a není už ukončeno)
             UpravitVypujckuCommand = new RelayCommand(UpravitVypujcku, x =>
                 VybranaVypujcka != null && VybranaVypujcka.Stav != StavVypujcky.Ukonceno);
 
@@ -72,16 +72,18 @@ namespace PujcovnaAut.ViewModels
 
         private void NacistData()
         {
+            // Načtení výpůjček včetně všech vazeb (Auto, Zákazník, Kategorie, Pojištění)
             var vypujcky = Globals.context.Vypujcky
-                                  .Include(v => v.Zakaznik)
-                                  .Include(v => v.Auto).ThenInclude(a => a.Kategorie)
-                                  .Include(v => v.Pojisteni)
-                                  .ToList();
+                                          .Include(v => v.Zakaznik)
+                                          .Include(v => v.Auto).ThenInclude(a => a.Kategorie)
+                                          .Include(v => v.Pojisteni)
+                                          .ToList();
 
             VypujckySource = new ObservableCollection<Vypujcka>(vypujcky);
             VypujckyView = CollectionViewSource.GetDefaultView(VypujckySource);
             VypujckyView.Filter = FilterVypujcek;
 
+            // Načtení zákazníků pro filtr + přidání položky "(Všichni)"
             var zakazniciList = Globals.context.Zakaznici.ToList();
             zakazniciList.Insert(0, new Zakaznik { ZakaznikId = -1, Prijmeni = "(Všichni)", Jmeno = "" });
             ZakazniciCol = new ObservableCollection<Zakaznik>(zakazniciList);
@@ -97,7 +99,7 @@ namespace PujcovnaAut.ViewModels
         private void NovaVypujcka(object parameter)
         {
             var nova = new Vypujcka();
-            nova.Stav = StavVypujcky.Zapujceno; // Použití Enumu
+            nova.Stav = StavVypujcky.Zapujceno;
             nova.DatumOd = DateTime.Now;
             nova.DatumDo = DateTime.Now.AddDays(1);
 
@@ -106,27 +108,28 @@ namespace PujcovnaAut.ViewModels
 
             if (okno.ShowDialog() == true)
             {
-                // Výpočet
+                // Výpočet počtu dní (minimum 1 den)
                 int pocetDni = (int)(nova.DatumDo - nova.DatumOd).TotalDays;
                 if (pocetDni < 1) pocetDni = 1;
                 nova.PocetDni = pocetDni;
 
                 if (nova.Auto != null && nova.Pojisteni != null)
                 {
+                    // Načtení kategorie z DB, pokud chybí (pro jistotu)
                     if (nova.Auto.Kategorie == null)
                     {
                         var autoZDb = Globals.context.Auta.Include(a => a.Kategorie).FirstOrDefault(a => a.AutoId == nova.AutoId);
                         if (autoZDb != null) nova.Auto.Kategorie = autoZDb.Kategorie;
                     }
 
-                    // Výpočet ceny dle analýzy
+                    // Výpočet ceny: (Sazba Auta + (Cena Pojištění * Koeficient)) * Dny
                     decimal cenaAuto = nova.Auto.Kategorie.DenniSazba * pocetDni;
                     decimal koeficient = (decimal)nova.Auto.Kategorie.KoeficientPoj;
                     decimal cenaPojisteni = (nova.Pojisteni.CenaZaDen * koeficient) * pocetDni;
 
                     nova.CenaCelkem = cenaAuto + cenaPojisteni;
 
-                    // Nastavení stavu auta
+                    // Nastavení stavu auta na Půjčené
                     nova.Auto.Stav = StavAuta.Pujcene;
                 }
 
@@ -140,22 +143,44 @@ namespace PujcovnaAut.ViewModels
         private void UpravitVypujcku(object parameter)
         {
             if (VybranaVypujcka == null) return;
+
             var vm = new VypujckaEditViewModel(VybranaVypujcka);
             if (new VypujckaEditView(vm) { Title = "Upravit" }.ShowDialog() == true)
             {
                 Globals.UlozitData();
                 VypujckyView.Refresh();
             }
-            else { Globals.Vratit(); NacistData(); }
+            else
+            {
+                // Pokud uživatel dá Storno, vrátíme změny zpět
+                Globals.Vratit();
+                NacistData();
+            }
         }
 
         private void VratitAuto(object parameter)
         {
             if (VybranaVypujcka == null) return;
-            if (MessageBox.Show($"Vrátit {VybranaVypujcka.Auto?.SPZ}?", "Info", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+
+            // --- ZDE JE VAŠE POŽADOVANÁ ÚPRAVA S DETAILNÍM TEXTEM ---
+            string zprava = $"Chystáte se ukončit výpůjčku. Jsou údaje správné?\n\n" +
+                            $"Vozidlo: {VybranaVypujcka.Auto.Znacka} {VybranaVypujcka.Auto.Model}\n" +
+                            $"SPZ: {VybranaVypujcka.Auto.SPZ}\n" +
+                            $"Zákazník: {VybranaVypujcka.Zakaznik.Jmeno} {VybranaVypujcka.Zakaznik.Prijmeni}\n" +
+                            $"Plánované vrácení: {VybranaVypujcka.DatumDo:dd.MM.yyyy}";
+
+            // Zobrazení MessageBoxu
+            if (MessageBox.Show(zprava, "Potvrzení vrácení vozu", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
-                VybranaVypujcka.Stav = StavVypujcky.Ukonceno; // Použití Enumu
-                if (VybranaVypujcka.Auto != null) VybranaVypujcka.Auto.Stav = StavAuta.Volne;
+                // Změna stavu výpůjčky na Ukončeno
+                VybranaVypujcka.Stav = StavVypujcky.Ukonceno;
+
+                // Uvolnění auta (nastavení na Volné)
+                if (VybranaVypujcka.Auto != null)
+                {
+                    VybranaVypujcka.Auto.Stav = StavAuta.Volne;
+                }
+
                 Globals.UlozitData();
                 VypujckyView.Refresh();
             }
