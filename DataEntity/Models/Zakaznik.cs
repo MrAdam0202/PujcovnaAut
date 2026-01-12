@@ -1,4 +1,5 @@
-﻿using PropertyChanged;
+﻿using DataEntity.Models.Base;
+using PropertyChanged;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;

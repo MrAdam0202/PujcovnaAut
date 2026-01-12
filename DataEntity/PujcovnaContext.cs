@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DataEntity.Models.Enums;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 

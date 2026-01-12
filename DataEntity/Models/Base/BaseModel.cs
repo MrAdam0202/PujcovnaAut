@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
-namespace DataEntity
+namespace DataEntity.Models.Base
 {
     /// <summary>
     /// Abstraktní základní třída pro všechny datové entity.
@@ -40,7 +40,7 @@ namespace DataEntity
             string error = string.Empty;
 
             // Je získána hodnota vlastnosti pomocí reflexe.
-            var value = this.GetType().GetProperty(propertyName).GetValue(this, null);
+            var value = GetType().GetProperty(propertyName).GetValue(this, null);
             var results = new List<ValidationResult>(1);
             var context = new ValidationContext(this, null, null) { MemberName = propertyName };
 
