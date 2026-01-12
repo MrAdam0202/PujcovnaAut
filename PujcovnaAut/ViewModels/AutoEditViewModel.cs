@@ -1,4 +1,5 @@
 ﻿using DataEntity;
+using DataEntity.Models.Enums;
 using System.Collections.ObjectModel;
 using System.Linq;
 

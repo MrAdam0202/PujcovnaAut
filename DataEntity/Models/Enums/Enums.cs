@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace DataEntity
+namespace DataEntity.Models.Enums
 {
     /// <summary>
     /// Definuje možné stavy, ve kterých se může nacházet vozidlo v evidenci.
